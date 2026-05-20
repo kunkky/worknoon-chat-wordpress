@@ -182,13 +182,13 @@
     msgInput.value = '';
     socket && socket.emit('typing_stop', { conversationId: activeConvId });
 
-    try {
-      const { message } = await apiFetch(`/messages/${activeConvId}`, 'POST', { content });
-      renderMessage(message);
-      scrollToBottom();
-    } catch (err) {
-      appendSystemMessage('Failed to send message.');
+    if (!socket) {
+      appendSystemMessage('Not connected. Please refresh.');
+      return;
     }
+    // Send via socket so the backend persists + broadcasts new_message
+    // to all room members. The new_message handler below renders it locally.
+    socket.emit('send_message', { conversationId: activeConvId, content });
   }
 
   // ── Render helpers ────────────────────────────────────────────────────────
