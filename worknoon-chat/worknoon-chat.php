@@ -4,7 +4,7 @@
  * Plugin URI:  https://github.com/yourusername/worknoon-chat-wordpress
  * Description: Floating real-time chat widget for Worknoon. Integrates with the Worknoon Chat backend via REST API and Socket.IO.
  * Version:     1.0.0
- * Author:      Ademuyiwa Adekunle
+ * Author:      Ademuyiwa Adekunle I.
  * License:     GPL-2.0+
  */
 
