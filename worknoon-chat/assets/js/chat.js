@@ -128,36 +128,58 @@
         return;
       }
 
+      // Online agents first, then offline
+      const online  = agents.filter(a => a.isOnline);
+      const offline = agents.filter(a => !a.isOnline);
+
       agentListEl.innerHTML = '';
-      agents.forEach(agent => {
-        const initials = agent.name
-          .split(' ')
-          .map(n => n[0])
-          .join('')
-          .toUpperCase()
-          .slice(0, 2);
 
-        const item = document.createElement('div');
-        item.className = 'wnc-agent-item';
-        item.innerHTML = `
-          <div class="wnc-agent-avatar">
-            ${initials}
-            <span class="wnc-agent-presence${agent.isOnline ? ' online' : ''}"></span>
-          </div>
-          <div class="wnc-agent-info">
-            <div class="wnc-agent-name">${agent.name}</div>
-            <div class="wnc-agent-status">${agent.isOnline ? 'Online' : 'Offline'}</div>
-          </div>
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#9ca3af">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-          </svg>`;
+      if (online.length) {
+        agentListEl.appendChild(makeGroupLabel(`Available · ${online.length}`));
+        online.forEach(a => agentListEl.appendChild(makeAgentItem(a)));
+      }
 
-        item.addEventListener('click', () => startConversationWith(agent));
-        agentListEl.appendChild(item);
-      });
+      if (offline.length) {
+        agentListEl.appendChild(makeGroupLabel(`Offline · ${offline.length}`));
+        offline.forEach(a => agentListEl.appendChild(makeAgentItem(a)));
+      }
     } catch {
       agentListEl.innerHTML = '<p class="wnc-agent-list-empty">Could not load agents. Please try again.</p>';
     }
+  }
+
+  function makeGroupLabel(text) {
+    const el = document.createElement('div');
+    el.className = 'wnc-agent-group-label';
+    el.textContent = text;
+    return el;
+  }
+
+  function makeAgentItem(agent) {
+    const initials = agent.name
+      .split(' ')
+      .map(n => n[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+
+    const item = document.createElement('div');
+    item.className = 'wnc-agent-item';
+    item.innerHTML = `
+      <div class="wnc-agent-avatar">
+        ${initials}
+        <span class="wnc-agent-presence${agent.isOnline ? ' online' : ''}"></span>
+      </div>
+      <div class="wnc-agent-info">
+        <div class="wnc-agent-name">${agent.name}</div>
+        <div class="wnc-agent-status">${agent.isOnline ? 'Online · Ready to chat' : 'Offline · May respond later'}</div>
+      </div>
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#9ca3af">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>`;
+
+    item.addEventListener('click', () => startConversationWith(agent));
+    return item;
   }
 
   async function startConversationWith(agent) {
