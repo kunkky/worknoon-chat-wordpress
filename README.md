@@ -95,3 +95,11 @@ Given the assessment timeline, the following were intentionally deferred:
 
 - CORS: the WordPress frontend (e.g. `http://localhost:8080`) must be in the backend's `CLIENT_URL` or CORS `origin` config. This is a common gotcha in local WordPress setups.
 - Socket.IO on HTTPS WordPress sites requires the backend to also be HTTPS (WSS). For local dev, matching HTTP is fine.
+
+---
+
+## Assessment Submission
+
+Submitted for recruitment evaluation purposes at **Worknoon**.
+
+**License: All Rights Reserved** — This code was created as part of a job application assessment and may not be reused, redistributed, or modified without explicit permission from the author.
