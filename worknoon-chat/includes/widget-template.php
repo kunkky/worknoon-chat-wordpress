@@ -22,7 +22,7 @@
                 <input id="wnc-email" type="email" placeholder="Email" class="wnc-input" />
                 <input id="wnc-password" type="password" placeholder="Password" class="wnc-input" />
                 <button id="wnc-login-btn" class="wnc-btn-primary">Login</button>
-                <p class="wnc-auth-note">New here? <a href="<?php echo esc_url( get_option('wnc_api_url') ); ?>/register" target="_blank">Register on Worknoon</a></p>
+                <p class="wnc-auth-note">New here? <a href="<?php echo esc_url( get_option('wnc_frontend_url') ); ?>/signup" target="_blank">Register on Worknoon</a></p>
             </div>
         </div>
 

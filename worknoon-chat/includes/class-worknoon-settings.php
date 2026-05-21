@@ -22,11 +22,13 @@ class Worknoon_Settings {
     public static function register_settings() {
         register_setting( 'wnc_options', 'wnc_api_url', [ 'sanitize_callback' => 'esc_url_raw' ] );
         register_setting( 'wnc_options', 'wnc_socket_url', [ 'sanitize_callback' => 'esc_url_raw' ] );
+        register_setting( 'wnc_options', 'wnc_frontend_url', [ 'sanitize_callback' => 'esc_url_raw' ] );
 
         add_settings_section( 'wnc_main', 'Connection Settings', null, 'worknoon-chat' );
 
         add_settings_field( 'wnc_api_url', 'Backend API URL', [ __CLASS__, 'api_url_field' ], 'worknoon-chat', 'wnc_main' );
         add_settings_field( 'wnc_socket_url', 'Socket.IO URL', [ __CLASS__, 'socket_url_field' ], 'worknoon-chat', 'wnc_main' );
+        add_settings_field( 'wnc_frontend_url', 'Frontend App URL', [ __CLASS__, 'frontend_url_field' ], 'worknoon-chat', 'wnc_main' );
     }
 
     public static function api_url_field() {
@@ -37,6 +39,12 @@ class Worknoon_Settings {
     public static function socket_url_field() {
         $val = get_option( 'wnc_socket_url', '' );
         echo '<input type="url" name="wnc_socket_url" value="' . esc_attr( $val ) . '" class="regular-text" placeholder="http://localhost:5000" />';
+    }
+
+    public static function frontend_url_field() {
+        $val = get_option( 'wnc_frontend_url', '' );
+        echo '<input type="url" name="wnc_frontend_url" value="' . esc_attr( $val ) . '" class="regular-text" placeholder="http://localhost:3000" />';
+        echo '<p class="description">Used for the "Register" link in the chat widget.</p>';
     }
 
     public static function render_page() {
