@@ -17,6 +17,8 @@
   const authView       = document.getElementById('wnc-auth');
   const chatView       = document.getElementById('wnc-chat');
   const endedView      = document.getElementById('wnc-ended');
+  const selectView     = document.getElementById('wnc-select');
+  const agentListEl    = document.getElementById('wnc-agent-list');
   const authError      = document.getElementById('wnc-auth-error');
   const emailInput     = document.getElementById('wnc-email');
   const passInput      = document.getElementById('wnc-password');
@@ -25,6 +27,7 @@
   const endChatBtn     = document.getElementById('wnc-end-chat-btn');
   const newChatBtn     = document.getElementById('wnc-new-chat-btn');
   const endedLogoutBtn = document.getElementById('wnc-ended-logout-btn');
+  const backBtn        = document.getElementById('wnc-back-btn');
   const messagesEl     = document.getElementById('wnc-messages');
   const msgInput       = document.getElementById('wnc-msg-input');
   const sendBtn        = document.getElementById('wnc-send-btn');
@@ -101,26 +104,69 @@
     endedView.hidden = false;
   }
 
-  // ── New chat ──────────────────────────────────────────────────────────────
+  // ── New chat → agent selection ────────────────────────────────────────────
   newChatBtn.addEventListener('click', async () => {
-    endedView.hidden = true;
-    chatView.hidden  = false;
-    messagesEl.innerHTML = '';
-    appendSystemMessage('Starting a new session…');
-    await startNewConversation();
+    endedView.hidden  = true;
+    selectView.hidden = false;
+    await loadAgents();
   });
 
-  async function startNewConversation() {
-    try {
-      // Find an available agent to start a conversation with
-      const { users } = await apiFetch('/users');
-      const agent = users.find(u => u.role === 'agent') || users[0];
+  // Back from agent selection → ended screen
+  backBtn.addEventListener('click', () => {
+    selectView.hidden = true;
+    endedView.hidden  = false;
+  });
 
-      if (!agent) {
-        appendSystemMessage('No agents available right now. Try again later.');
+  async function loadAgents() {
+    agentListEl.innerHTML = '<p class="wnc-agent-list-empty">Loading…</p>';
+    try {
+      const { users } = await apiFetch('/users');
+      const agents = users.filter(u => u.role === 'agent');
+
+      if (!agents.length) {
+        agentListEl.innerHTML = '<p class="wnc-agent-list-empty">No agents available right now.</p>';
         return;
       }
 
+      agentListEl.innerHTML = '';
+      agents.forEach(agent => {
+        const initials = agent.name
+          .split(' ')
+          .map(n => n[0])
+          .join('')
+          .toUpperCase()
+          .slice(0, 2);
+
+        const item = document.createElement('div');
+        item.className = 'wnc-agent-item';
+        item.innerHTML = `
+          <div class="wnc-agent-avatar">
+            ${initials}
+            <span class="wnc-agent-presence${agent.isOnline ? ' online' : ''}"></span>
+          </div>
+          <div class="wnc-agent-info">
+            <div class="wnc-agent-name">${agent.name}</div>
+            <div class="wnc-agent-status">${agent.isOnline ? 'Online' : 'Offline'}</div>
+          </div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#9ca3af">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>`;
+
+        item.addEventListener('click', () => startConversationWith(agent));
+        agentListEl.appendChild(item);
+      });
+    } catch {
+      agentListEl.innerHTML = '<p class="wnc-agent-list-empty">Could not load agents. Please try again.</p>';
+    }
+  }
+
+  async function startConversationWith(agent) {
+    selectView.hidden = true;
+    chatView.hidden   = false;
+    messagesEl.innerHTML = '';
+    appendSystemMessage(`Starting a session with ${agent.name}…`);
+
+    try {
       const { conversation } = await apiFetch('/conversations', 'POST', {
         participantId: agent._id,
         type: 'direct',
@@ -133,8 +179,8 @@
         socket.emit('join_conversation', activeConvId);
       }
 
-      appendSystemMessage('New session started. How can we help?');
-    } catch (err) {
+      appendSystemMessage(`You're now chatting with ${agent.name}. How can we help?`);
+    } catch {
       appendSystemMessage('Could not start a new session. Please try again.');
     }
   }
@@ -153,9 +199,10 @@
       }
     }
 
-    authView.hidden  = true;
-    endedView.hidden = true;
-    chatView.hidden  = false;
+    authView.hidden   = true;
+    endedView.hidden  = true;
+    selectView.hidden = true;
+    chatView.hidden   = false;
 
     await initConversation();
     connectSocket();
@@ -286,9 +333,10 @@
   }
 
   function showAuthView() {
-    authView.hidden  = false;
-    chatView.hidden  = true;
-    endedView.hidden = true;
+    authView.hidden   = false;
+    chatView.hidden   = true;
+    endedView.hidden  = true;
+    selectView.hidden = true;
   }
 
   function showAuthError(msg) {

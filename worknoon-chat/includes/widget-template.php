@@ -76,5 +76,20 @@
             </div>
         </div>
 
+        <!-- Agent selection view -->
+        <div id="wnc-select" class="wnc-view" hidden>
+            <div class="wnc-header">
+                <div class="wnc-header-left">
+                    <button id="wnc-back-btn" class="wnc-icon-btn" title="Back">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <span>Who would you like to chat with?</span>
+                </div>
+            </div>
+            <div id="wnc-agent-list" class="wnc-agent-list"></div>
+        </div>
+
     </div>
 </div>
