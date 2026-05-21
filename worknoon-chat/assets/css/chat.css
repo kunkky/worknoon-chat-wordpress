@@ -71,22 +71,102 @@
 .wnc-header {
   background: var(--wnc-primary);
   color: #fff;
-  padding: 14px 16px;
+  padding: 12px 16px;
   font-weight: 600;
   font-size: 15px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
 }
 
-.wnc-logout {
+.wnc-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.wnc-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.wnc-icon-btn {
   background: none;
   border: none;
   color: rgba(255,255,255,0.8);
   cursor: pointer;
-  font-size: 16px;
-  padding: 0;
+  padding: 4px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
 }
+.wnc-icon-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+
+.wnc-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.4);
+  flex-shrink: 0;
+}
+.wnc-status-dot.online { background: #4ade80; }
+
+/* Session ended screen */
+.wnc-ended-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  gap: 12px;
+  text-align: center;
+}
+
+.wnc-ended-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #dcfce7;
+  color: #16a34a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.wnc-ended-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--wnc-text);
+  margin: 0;
+}
+
+.wnc-ended-sub {
+  font-size: 13px;
+  color: var(--wnc-text-muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.wnc-btn-ghost {
+  background: none;
+  border: 1px solid var(--wnc-border);
+  color: var(--wnc-text-muted);
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+  width: 100%;
+}
+.wnc-btn-ghost:hover { border-color: #9ca3af; color: var(--wnc-text); }
 
 .wnc-view { display: flex; flex-direction: column; flex: 1; }
 .wnc-view[hidden] { display: none !important; }
